@@ -8,16 +8,16 @@ def on_connect(client, userdata, flags, rc):
     print(f'Connected (Result: {rc})')
 
     # See: https://docs.solace.com/Open-APIs-Protocols/MQTT/MQTT-Topics.htm
-    client.subscribe('channels/*/chatlog')
+    client.subscribe('channels/+/chatlog')
 
 
 # Callback when message is received
 def on_message(client, userdata, msg):
-
+    print(f'Got message {msg.payload}')
     # publish new summary every new messages
-    text = msg.chatlog
+    text = str(msg.payload)
     # todo: change word count if needed
-    summary = summarize(text, word_count=30)
+    summary = summarize(text)
     channelID = msg.topic.split('/')[1]
     client.publish('channels/' + channelID + '/summary', payload=summary)
 
@@ -38,6 +38,6 @@ client.username_pw_set('solace-cloud-client', 'tjn2jlk195ntk213e5idk29929')
 
 # Use the host and port from Solace Cloud without the protocol
 # ex. "ssl://yoururl.messaging.solace.cloud:8883" becomes "yoururl.messaging.solace.cloud"
-client.connect('ssl://mr1rvhmgxn1b0t.messaging.solace.cloud', port=8883)
+client.connect('mr1rvhmgxn1b0t.messaging.solace.cloud', port=8883)
 
 client.loop_forever()
