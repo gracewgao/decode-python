@@ -16,7 +16,8 @@ def on_message(client, userdata, msg):
 
     # publish new summary every new messages
     text = msg.chatlog
-    summary = summarize(". ".join(sentences), word_count=30)
+    # todo: change word count if needed
+    summary = summarize(text, word_count=30)
     channelID = msg.topic.split('/')[1]
     client.publish('channels/' + channelID + '/summary', payload=summary)
 
